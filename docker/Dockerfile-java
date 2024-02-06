@@ -1,0 +1,15 @@
+# Use a Java base image
+FROM openjdk:11
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Java server and client JARs and other files
+COPY Ruthelde_Shell_Tools/Ruthelde_Server/Ruthelde_Server.jar /app
+COPY Ruthelde_Shell_Tools/Ruthelde_Client/StoppingData.json /app
+
+# Expose the necessary ports (if needed)
+EXPOSE 9090
+
+# Run the Java server
+CMD ["java", "-jar", "Ruthelde_Server.jar", "9090"]

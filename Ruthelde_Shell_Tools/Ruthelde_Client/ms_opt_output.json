@@ -1,0 +1,142 @@
+{
+  "spectraParameters": [
+    {
+      "name": "SrTiO3.json",
+      "charge": 25.07168256565367,
+      "factor": 1.504159295746386,
+      "offset": 23.949757435341475,
+      "resolution": 14.713671611576377
+    },
+    {
+      "name": "SrTiO3.json",
+      "charge": 24.165380165749106,
+      "factor": 1.4991672430667062,
+      "offset": 28.240447657375725,
+      "resolution": 15.783924638885152
+    }
+  ],
+  "targetModel": {
+    "layerList": [
+      {
+        "elementList": [
+          {
+            "isotopeList": [
+              {
+                "mass": 83.91343,
+                "abundance": 0.0056
+              },
+              {
+                "mass": 85.90926,
+                "abundance": 0.0986
+              },
+              {
+                "mass": 86.90888,
+                "abundance": 0.07
+              },
+              {
+                "mass": 87.90561,
+                "abundance": 0.8258
+              }
+            ],
+            "atomicNumber": 38,
+            "arealDensity": 122.72343734136544,
+            "ratio": 0.222918533522176,
+            "min_ratio": 0.0,
+            "max_ratio": 1.0
+          },
+          {
+            "isotopeList": [
+              {
+                "mass": 45.95263,
+                "abundance": 0.08
+              },
+              {
+                "mass": 46.95176,
+                "abundance": 0.073
+              },
+              {
+                "mass": 47.94795,
+                "abundance": 0.738
+              },
+              {
+                "mass": 48.94787,
+                "abundance": 0.055
+              },
+              {
+                "mass": 49.94479,
+                "abundance": 0.054
+              }
+            ],
+            "atomicNumber": 22,
+            "arealDensity": 148.28817503344078,
+            "ratio": 0.26935509005656233,
+            "min_ratio": 0.0,
+            "max_ratio": 1.0
+          },
+          {
+            "isotopeList": [
+              {
+                "mass": 15.99492,
+                "abundance": 0.99762
+              },
+              {
+                "mass": 16.99913,
+                "abundance": 3.8E-4
+              },
+              {
+                "mass": 17.99916,
+                "abundance": 0.002
+              }
+            ],
+            "atomicNumber": 8,
+            "arealDensity": 279.5188231269009,
+            "ratio": 0.5077263764212617,
+            "min_ratio": 0.0,
+            "max_ratio": 1.0
+          }
+        ],
+        "arealDensity": 550.5304355017071,
+        "massDensity": 2.5207947163909763,
+        "thickness": 0.0,
+        "min_AD": 400.0,
+        "max_AD": 800.0
+      },
+      {
+        "elementList": [
+          {
+            "isotopeList": [
+              {
+                "mass": 27.97693,
+                "abundance": 0.9223
+              },
+              {
+                "mass": 28.9765,
+                "abundance": 0.0467
+              },
+              {
+                "mass": 29.97377,
+                "abundance": 0.031
+              },
+              {
+                "mass": 31.97415,
+                "abundance": 0.0
+              }
+            ],
+            "atomicNumber": 14,
+            "arealDensity": 29999.56915634637,
+            "ratio": 1.0,
+            "min_ratio": 0.0,
+            "max_ratio": 1.0
+          }
+        ],
+        "arealDensity": 29999.56915634637,
+        "massDensity": 2.3212,
+        "thickness": 0.0,
+        "min_AD": 29999.0,
+        "max_AD": 30000.0
+      }
+    ]
+  },
+  "fitness": 83.23902165176818,
+  "optimizationTime": 26.704
+}

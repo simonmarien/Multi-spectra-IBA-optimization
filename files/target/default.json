@@ -1,0 +1,26 @@
+{
+  "layerList": [
+    {
+      "arealDensity": 0,
+      "min_AD": 0,
+      "max_AD": 0,
+      "massDensity": 0,
+      "thickness": 0,
+      "elementList": [
+        {
+          "isotopeList": [
+            {
+              "mass": 0,
+              "abundance": 0
+            }
+          ],
+          "atomicNumber": 0,
+          "arealDensity": 0,
+          "ratio": 0,
+          "min_ratio": 0,
+          "max_ratio": 0
+        }
+      ]
+    }
+  ]
+}

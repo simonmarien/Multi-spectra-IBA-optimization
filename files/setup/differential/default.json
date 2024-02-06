@@ -1,0 +1,13 @@
+{
+  "populationSize": 30,
+  "F": 0.5,
+  "CR": 0.7,
+  "THR": 0.9,
+  "numBins": 2,
+  "startCH": 100,
+  "endCH": 1000,
+  "endTime": 0.0,
+  "endFitness": 0.0,
+  "endGeneration": 40.0,
+  "isotopeTime": 0.0
+}

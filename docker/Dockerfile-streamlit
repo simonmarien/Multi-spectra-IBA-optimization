@@ -1,0 +1,28 @@
+# Use a base image that includes Java and Python
+FROM adoptopenjdk:11-jre-hotspot
+
+# Set the working directory
+WORKDIR /app
+
+# Install Python and any additional dependencies if needed
+RUN apt-get update && apt-get install -y python3 python3-pip
+
+# Set the working directory
+WORKDIR /app
+
+COPY requirements.txt /app
+
+# Install any Python dependencies if required
+RUN pip install -r requirements.txt
+
+# Copy the Streamlit app files
+COPY app.py /app
+COPY src /app/src
+COPY files /app/files
+COPY Ruthelde_Shell_Tools /app/Ruthelde_Shell_Tools
+
+# Expose the Streamlit app port
+EXPOSE 8501
+
+# Run the Streamlit app
+CMD ["streamlit", "run", "app.py"]

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  java:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-java
+    ports:
+      - "9090:9090"
+    volumes:
+      - type: bind # real-time mount files directory
+        source: ./files
+        target: /app/files
+  streamlit:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - type: bind # real-time mount files directory
+        source: ./files
+        target: /app/files
+    depends_on:
+      - java
+    environment:
+      - PYTHONUNBUFFERED=1
+volumes:
+    files:
