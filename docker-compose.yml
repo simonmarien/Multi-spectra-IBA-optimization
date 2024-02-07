@@ -10,6 +10,7 @@ services:
       - type: bind # real-time mount files directory
         source: ./files
         target: /app/files
+    restart: always
   streamlit:
     build:
       context: .
@@ -24,5 +25,6 @@ services:
       - java
     environment:
       - PYTHONUNBUFFERED=1
+    restart: always
 volumes:
     files:
