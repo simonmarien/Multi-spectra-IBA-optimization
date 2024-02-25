@@ -1,9 +1,11 @@
 # Config parameters used by the application
 
 # Docker related
-DOCKERIZED = True
+DOCKERIZED = False
 JAVA_DOCKER_NAME = "java"
 JAVA_DOCKER_PORT = 9090
+DE_DOCKER_NAME = "de"
+DE_DOCKER_PORT = 9080
 
 # Ruthelde jar related
 RUTHELDE_JAR_PATH = "Ruthelde_Shell_Tools/Ruthelde_Client/"

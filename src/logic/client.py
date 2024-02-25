@@ -15,6 +15,14 @@ def simulate_spectra():
     run_client_sim(config.SIM_INPUT_FILE, config.SIM_OUTPUT_FOLDER + "generated-" + now_str + ".json")
 
 
+def optimize_spectra_de():
+    # now = datetime.datetime.now()
+    # now_str = now.strftime("%Y-%m-%d_%H-%M-%S")
+    # run_client_sim('../../files/input/sim_input.json', "../../files/spectra/json/generated-" + now_str + ".json", port=config.DE_DOCKER_PORT)
+    for progress in run_client("OPTIMIZE", "../../files/input/opt_input.json",
+                               "../../files/spectra/json/generated-opt-" + ".json", port=config.DE_DOCKER_PORT):
+        print(progress)
+
 def simulate_optimized_spectra(now_str, file_prefix=""):
     run_client_sim(config.SIM_INPUT_FILE,
                    config.OPT_OUTPUT_FOLDER + now_str + "/" + file_prefix + "generated-sim-" + now_str + ".json")
@@ -238,3 +246,6 @@ def simulate_spectra_from_dict(input_dict, port=config.JAVA_DOCKER_PORT, debug=F
     except Exception as ex:
         print("Error:", ex)
         print("Request string:", request_str)
+
+
+optimize_spectra_de()
