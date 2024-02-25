@@ -3,3 +3,5 @@ streamlit_option_menu
 matplotlib
 numpy
 scipy
+coverage
+pytest

@@ -537,6 +537,7 @@ def get_all_de_setup_names():
     names.insert(0, names.pop(names.index("default.json")))
     return names
 
+
 def get_de_setup_names_without_default():
     """
     Get all differential setup names without default.
