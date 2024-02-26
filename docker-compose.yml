@@ -38,6 +38,8 @@ services:
         target: /app/files
     depends_on:
       - java
+    environment:
+      - PYTHONUNBUFFERED=1
     restart: always
 volumes:
   files:

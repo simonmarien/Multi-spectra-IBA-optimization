@@ -2,8 +2,10 @@ import socket, time, json, os, sys
 import threading
 import single_spectrum_optimization as sso
 
+
 # Add the project root directory to the PYTHONPATH
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+import src.logic.config as config
 
 
 def handle_client_connection(client_socket):
@@ -64,6 +66,8 @@ def optimize_multiple_spectra(data):
 
 
 def start_server(host='localhost', port=9080):
+    if config.DOCKERIZED:
+        host = config.DE_DOCKER_NAME
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((host, port))
     server.listen(5)  # max backlog of connections

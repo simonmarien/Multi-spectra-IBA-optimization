@@ -64,6 +64,9 @@ def show():
         # Optimize size 4 markdown header
         st.markdown("#### Optimization")
 
+        # Radio button to choose Ruthelde or SciPy DE
+        de_radio = st.radio("Choose DE implementation", ("Ruthelde", "SciPy"))
+
         st.markdown("##### Spectra selection")
         # Select spectra dropdown
         selected_spectra_opt = st.selectbox("Select spectra", spectra_reader.list_spectra_file_names() or [])
@@ -135,7 +138,7 @@ def show():
         opt_button = st.button("Start Optimization")
 
         if opt_button:
-            input.save_opt_input_json(selected_spectra_opt, selected_experimental_setup_opt, selected_detector_setup_opt, selected_calculation_setup_opt, convert.get_de_parameter_from_state(), file.get_target_json_from_file(selected_target))
+            # input.save_opt_input_json(selected_spectra_opt, selected_experimental_setup_opt, selected_detector_setup_opt, selected_calculation_setup_opt, convert.get_de_parameter_from_state(), file.get_target_json_from_file(selected_target))
             now_str = file.optimize_single_spectra(selected_spectra_opt)
             # cmd.optimize_spectrum(now_str)
 
@@ -146,15 +149,20 @@ def show():
             progress_bar = progress_bar_placeholder.progress(0)
 
             end_generation = int(file.get_de_setup_json_from_file(selected_de_parameter_opt)['endGeneration'])
-            for progress in client.optimize_spectra(now_str):
-                if progress > int(end_generation - 2):
-                    # Remove progress bar and status text
-                    progress_bar_placeholder.empty()
-                    status_text_placeholder.empty()
-                    break
-                status_percentage = progress/end_generation
-                progress_bar.progress(status_percentage)
-                status_text_placeholder.text(f"Current progress: {status_percentage*100}%")
+            # If Ruthelde is selected
+            if de_radio == "Ruthelde":
+                for progress in client.optimize_spectra(now_str):
+                    if progress > int(end_generation - 2):
+                        # Remove progress bar and status text
+                        progress_bar_placeholder.empty()
+                        status_text_placeholder.empty()
+                        break
+                    status_percentage = progress/end_generation
+                    progress_bar.progress(status_percentage)
+                    status_text_placeholder.text(f"Current progress: {status_percentage*100}%")
+            # If SciPy is selected
+            else:
+                client.optimize_spectra_de(now_str)
 
             opt_input = file.get_opt_input_json_from_optimization_directory(now_str)
             target = file.get_target_from_generated_sample(now_str)

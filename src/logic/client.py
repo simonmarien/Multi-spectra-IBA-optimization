@@ -266,7 +266,9 @@ def run_client_no_progress(request_type, input_file, output_file, port=config.DE
 
     try:
         print("Connecting to server ... ", end="")
+        print(server, int(port))
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            print("Socket created: ", s)
             s.connect((server, int(port)))
             print("Done")
 
@@ -304,3 +306,6 @@ def run_client_no_progress(request_type, input_file, output_file, port=config.DE
 
     except Exception as ex:
         print("Error:", ex)
+
+
+# optimize_spectra_de("2020-10-30_15-00-00")
