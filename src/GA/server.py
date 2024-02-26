@@ -1,6 +1,7 @@
 import socket, time, json, os, sys
 import threading
 import single_spectrum_optimization as sso
+import multi_spectra_optimization as mso
 
 
 # Add the project root directory to the PYTHONPATH
@@ -14,9 +15,7 @@ def handle_client_connection(client_socket):
         while True:
             chunk = client_socket.recv(4096).decode()
             if "End_Of_Transmission" in chunk:
-                print("End of transmission found")
                 request_data += chunk[:chunk.find("End_Of_Transmission")]
-                print("Request data: ", request_data)
                 break
             request_data += chunk
         # Assuming the request is immediately followed by "End_Of_Transmission"
@@ -61,8 +60,11 @@ def optimize_spectra(data):
 
 
 def optimize_multiple_spectra(data):
-    # Your optimization for multiple spectra logic here
-    return "Optimized multiple spectra based on " + data
+    # Optimize multiple spectra
+    opt = mso.optimize_multi_spectra(data)
+    # To string
+    opt = json.dumps(opt)
+    return opt
 
 
 def start_server(host='localhost', port=9080):

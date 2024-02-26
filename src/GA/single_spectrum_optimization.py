@@ -91,13 +91,11 @@ class OptimizationObject:
             iteration = 0
             return 1
 
-        print("LFF: ", lff, "Sigma_2: ", sigma_2)
-
         sigma_2 = math.log(lff) / math.log(sigma_2)
         # print("Variable parameters: ", self.params)
         # print("Fitness: ", sigma_2)
         # print(datetime.datetime.now())
-        print("Fitness: ", sigma_2)
+        # print("Fitness: ", sigma_2)
 
         global fitness
         fitness.append(sigma_2)

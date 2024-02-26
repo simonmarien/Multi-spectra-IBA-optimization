@@ -1,7 +1,7 @@
 from scipy.optimize import differential_evolution
 from scipy.signal import savgol_filter
 from src.GA import ga_input_output, experiment_input
-import math, datetime, numpy as np
+import math, datetime, json, numpy as np
 
 optimization_object = None
 global_logger = None
@@ -185,7 +185,6 @@ class OptimizationObjectMS:
         for i in range(len(self.measurement_indices)):
             # Calculate the fitness
             fitness += self.calculate_measurement_fitness(i, simulated_spectra[i])
-        print("Sum of fitness: ", fitness)
         fitness = fitness / len(self.measurement_indices)
         # fitness = self.calculate_measurement_fitness(0, simulated_spectra[0])
         # print("Fitness: ", 1/fitness)
@@ -305,27 +304,20 @@ def objective_function(params):
         stop = True
     global optimization_object
     optimization_object.params = params
-    optimization_object.normalize_ratios()
+    # optimization_object.normalize_ratios()
     fitness = optimization_object.evaluate()
-    return 1/fitness
+    print(f"Fitness: {1-fitness}")
+    return 1 - fitness
 
 
 def callback_function(xk, convergence):
-    # Normalize the ratios
-    global optimization_object
-    ratio_indices = optimization_object.ratio_indices
-    for ratio in ratio_indices:
-            temp = 0
-            for i in ratio:
-                temp += xk[i]
-            for i in ratio:
-                xk[i] = xk[i] / temp
     print(f"Current best solution: {xk}, Convergence: {convergence}")
     print(datetime.datetime.now())
     global global_logger
     global iteration
-    global_logger.log_message(f"Iteration: {iteration}")
-    global_logger.log_message(f"Current best solution: {xk}, Convergence: {convergence}")
+    if global_logger:
+        global_logger.log_message(f"Iteration: {iteration}")
+        global_logger.log_message(f"Current best solution: {xk}, Convergence: {convergence}")
     global stop
     if stop:
         stop = False
@@ -406,4 +398,43 @@ def evaluate_parameter_values(values, filename):
     fitness = optimization_object.evaluate()
     print(fitness)
     return fitness
+
+
+def optimize_multi_spectra(ms_opt_input):
+    """
+    Optimizes multi spectra for the server
+    :param ms_opt_input:
+    :return:
+    """
+    ms_opt_input = json.loads(ms_opt_input)
+    global optimization_object
+    optimization_object = OptimizationObjectMS([], ms_opt_input)
+    # Get the de parameters
+    de_parameters = ga_input_output.get_de_parameter_dict_from_opt(ms_opt_input)
+    pop_size, max_iter, mutation_factor, crossover_rate, threshold = ga_input_output.get_de_parameters_from_opt(de_parameters)
+    # Get the bounds
+    bounds = optimization_object.bounds
+    # Change max_iter
+    max_iter = max_iter//(len(bounds)*100)
+    # Start time
+    start_time = datetime.datetime.now()
+    # Run the optimization
+    result = differential_evolution(objective_function, bounds, popsize=pop_size, maxiter=max_iter, mutation=mutation_factor, recombination=crossover_rate, disp=True, polish=True, callback=callback_function)
+    params = result.x
+    objective_value = result.fun
+    # Time elapsed
+    time_elapsed = datetime.datetime.now() - start_time
+    # Target
+    new_optimization_object = OptimizationObjectMS(params, ms_opt_input)
+    new_optimization_object.fill_in_variable_parameters(0)
+    target = new_optimization_object.optimization_dict['target']
+    # Create the response
+    response = ga_input_output.create_multi_opt_response_object(target, params, time_elapsed.total_seconds(), objective_value, new_optimization_object.measurement_indices)
+    return response
+
+#
+# with open('../../files/input/ms_opt_input.json') as json_file:
+#     ms_opt_input = json_file.read()
+#     print(optimize_multi_spectra(ms_opt_input))
+
 

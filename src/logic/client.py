@@ -26,6 +26,12 @@ def optimize_spectra_de(now_str):
                            port=config.DE_DOCKER_PORT)
 
 
+def optimize_multiple_spectra_de(now_str):
+    run_client_no_progress("OPTIMIZE_MS", config.OPT_MS_INPUT_FILE,
+                           config.OPT_MS_OUTPUT_FOLDER + now_str + "/generated-opt-" + now_str + ".json",
+                           port=config.DE_DOCKER_PORT)
+
+
 def simulate_optimized_spectra(now_str, file_prefix=""):
     run_client_sim(config.SIM_INPUT_FILE,
                    config.OPT_OUTPUT_FOLDER + now_str + "/" + file_prefix + "generated-sim-" + now_str + ".json")
@@ -268,7 +274,6 @@ def run_client_no_progress(request_type, input_file, output_file, port=config.DE
         print("Connecting to server ... ", end="")
         print(server, int(port))
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            print("Socket created: ", s)
             s.connect((server, int(port)))
             print("Done")
 

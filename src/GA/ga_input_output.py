@@ -281,6 +281,38 @@ def create_single_opt_response_object(target, params, optimization_time, fitness
     }
     return opt_response
 
+
+def create_multi_opt_response_object(target, params, optimization_time, fitness, measurement_indices):
+    """
+    Creates the multi optimization response object
+    :param target:
+    :param params:
+    :param ratio_indices:
+    :param optimization_time:
+    :param fitness:
+    :param amount_of_measurements:
+    :return:
+    """
+    spectra_parameters = []
+    for measurements_indice in measurement_indices:
+        spectra_parameters.append({
+            "charge": params[measurements_indice[0]],
+            "resolution": params[measurements_indice[3]],
+            "factor": params[measurements_indice[1]],
+            "offset": params[measurements_indice[2]],
+            "name": "Simulated"
+        })
+
+    # Create the optimization return object
+    opt_response = {
+        "targetModel": target,
+        "spectraParameters": spectra_parameters,
+        "optimizationTime": optimization_time,
+        "fitness": 1 - fitness
+    }
+    return opt_response
+
+
 # Test
 # opt = get_opt_from_file("../../files/input/opt_input.json")
 # # Simulate the spectra
