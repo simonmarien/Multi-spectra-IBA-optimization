@@ -17,19 +17,17 @@ def handle_client_connection(client_socket):
         # Assuming the request is immediately followed by "End_Of_Transmission"
         # request_data, _ = request_data.split(" \nEnd_Of_Transmission\n", 1)
 
-        # Identify the request type and process accordingly
         if request_data.startswith("si_"):
-            for progress in simulate_spectra(request_data[3:]):
-                client_socket.sendall(f"{progress}\n".encode())
+            response = simulate_spectra(request_data[3:])
         elif request_data.startswith("op_"):
-            for progress in optimize_spectra(request_data[3:]):
-                client_socket.sendall(f"{progress}\n".encode())
+            response = optimize_spectra(request_data[3:])
         elif request_data.startswith("ms_"):
-            for progress in optimize_multiple_spectra(request_data[3:]):
-                client_socket.sendall(f"{progress}\n".encode())
+            response = optimize_multiple_spectra(request_data[3:])
+        else:
+            response = "Invalid request type."
 
-        # Signal completion
-        client_socket.sendall("DE_FINISHED\n".encode())
+        # Send the response back to the client
+        client_socket.sendall((response + " \nEnd_Of_Transmission\n").encode())
 
     except Exception as e:
         print(f"Error handling client: {e}")
@@ -38,10 +36,8 @@ def handle_client_connection(client_socket):
 
 
 def simulate_spectra(data):
-    # Simulate progress updates
-    for i in range(1, 101, 20):  # Example progress values
-        yield f"DE-INFO {i}%"
-        time.sleep(1)  # Simulate work
+    # Your simulation logic here
+    return "Simulated spectra based on " + data
 
 
 def optimize_spectra(data):
@@ -54,16 +50,14 @@ def optimize_spectra(data):
 
     # Optimize spectra
     opt = sso.optimize_single_spectrum(data)
+    # To string
+    opt = json.dumps(opt)
     return opt
 
 
-
-
 def optimize_multiple_spectra(data):
-    # Your logic here
-    for i in range(1, 101, 20):
-        yield f"DE-INFO {i}%"
-        time.sleep(1)
+    # Your optimization for multiple spectra logic here
+    return "Optimized multiple spectra based on " + data
 
 
 def start_server(host='localhost', port=9080):

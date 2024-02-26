@@ -249,6 +249,29 @@ def get_de_parameters_from_opt(de_parameters):
     return pop_size, max_iter, mutation_factor, crossover_rate, threshold
 
 
+def create_single_opt_response_object(target, params, optimization_time, fitness):
+    """
+    Creates the single optimization response object
+    :param target:
+    :param params:
+    :param ratio_indices:
+    :param optimization_time:
+    :param fitness:
+    :return:
+    """
+    # Create the optimization return object
+    opt_response = {
+        "target": target,
+        "charge": params[0],
+        "resolution": params[3],
+        "factor": params[1],
+        "offset": params[2],
+        "optimizationTime": optimization_time,
+        "fitness": 1 - fitness
+    }
+    return opt_response
+
+
 # Test
 # opt = get_opt_from_file("../../files/input/opt_input.json")
 # # Simulate the spectra

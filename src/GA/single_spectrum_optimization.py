@@ -182,9 +182,10 @@ def callback_function(xk, convergence):
     print(datetime.datetime.now())
     global global_logger
     global iteration
-    # Log the iteration
-    global_logger.log_message(f"Iteration: {iteration}")
-    global_logger.log_message(f"Current best solution: {xk}, Convergence: {convergence}")
+    if global_logger:
+        # Log the iteration
+        global_logger.log_message(f"Iteration: {iteration}")
+        global_logger.log_message(f"Current best solution: {xk}, Convergence: {convergence}")
     global stop
     if stop:
         stop = False
@@ -209,7 +210,9 @@ def optimize_spectra(reference_spectra, fixed_params, bounds, de_parameters, rat
 
     result = differential_evolution(objective_function, bounds, callback=callback_function, maxiter=max_iter, popsize=pop_size, mutation=mutation_factor, recombination=crossover_rate, polish=polish, disp=disp, strategy=strategy, tol=0.01)
 
-    return result.x
+    objective_value = result.fun
+
+    return result.x, objective_value
 
 
 def run(file_path):
@@ -357,15 +360,24 @@ def optimize_single_spectrum(opt_input):
     # Get de parameters
     de_parameters = ga_input_output.get_de_parameter_dict_from_opt(opt_input)
     # Set maximum iterations
-    de_parameters['endGeneration'] = de_parameters['endGeneration']/(len(var_params))
+    de_parameters['endGeneration'] = de_parameters['endGeneration']/(len(var_params)*100)
+    print("Termination at generation: ", de_parameters['endGeneration'])
+    # Start time
+    start_time = datetime.datetime.now()
     # Optimize the spectra
-    optimized_params = optimize_spectra(reference_spectra, fixed_params, bounds, de_parameters, ratio_indices)
-    return optimized_params
+    optimized_params, objective_value = optimize_spectra(reference_spectra, fixed_params, bounds, de_parameters, ratio_indices)
+    # Elapsed time
+    elapsed_time = datetime.datetime.now() - start_time
+    # Target
+    target = ga_input_output.set_variable_parameters(fixed_params, optimized_params, ratio_indices)['target']
+    # Create the response
+    response = ga_input_output.create_single_opt_response_object(target, optimized_params, elapsed_time.total_seconds(), objective_value)
+    return response
 
 
-# Get ../../files/input/opt_input.json
-with open("../../files/input/opt_input.json", "r") as file:
-    opt_input = file.read()
-    optimize_single_spectrum(opt_input)
+# # Get ../../files/input/opt_input.json
+# with open("../../files/input/opt_input.json", "r") as file:
+#     opt_input = file.read()
+#     print(optimize_single_spectrum(opt_input))
 
 
