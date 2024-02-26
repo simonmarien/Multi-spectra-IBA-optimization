@@ -1,7 +1,7 @@
 # Config parameters used by the application
 
 # Docker related
-DOCKERIZED = False
+DOCKERIZED = True
 JAVA_DOCKER_NAME = "java"
 JAVA_DOCKER_PORT = 9090
 DE_DOCKER_NAME = "de"

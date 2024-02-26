@@ -1,6 +1,9 @@
-import socket, time, json
+import socket, time, json, os, sys
 import threading
-import src.GA.single_spectrum_optimization as sso
+import single_spectrum_optimization as sso
+
+# Add the project root directory to the PYTHONPATH
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
 def handle_client_connection(client_socket):

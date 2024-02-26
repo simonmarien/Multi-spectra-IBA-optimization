@@ -26,5 +26,18 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     restart: always
+  de:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-de
+    ports:
+      - "9080:9080"
+    volumes:
+      - type: bind # real-time mount files directory
+        source: ./files
+        target: /app/files
+    depends_on:
+      - java
+    restart: always
 volumes:
-    files:
+  files:

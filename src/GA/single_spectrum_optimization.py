@@ -1,6 +1,6 @@
 from scipy.optimize import differential_evolution
 from scipy.signal import savgol_filter
-from src.GA import ga_input_output, experiment_input
+import ga_input_output, experiment_input
 import math, datetime, json, numpy as np
 
 

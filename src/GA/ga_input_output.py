@@ -1,13 +1,18 @@
+import sys
+import os
+
+# Add the project root directory to the PYTHONPATH
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
 # Convert optimization object structure to GA object structure
-from src.logic import file
+import src.logic.file as file
 from src.logic import spectra_reader
 from src.logic import client
-from src.GA import log
 import json
-import numpy as np
 
 
-def convert_opt_input_to_ga_input(selected_spectra, experimental_setup, detector_setup, calculation_setup, de_parameter, target):
+def convert_opt_input_to_ga_input(selected_spectra, experimental_setup, detector_setup, calculation_setup, de_parameter,
+                                  target):
     """
     Converts the optimization input to the GA input (var params, fixed params, reference spectra)
     :param selected_spectra:
@@ -114,7 +119,10 @@ def set_variable_parameters(input_dict, var_params, ratio_indices):
             # Add ratio
             input_dict["target"]["layerList"][layer]["elementList"][i]["ratio"] = var_params[index]
             # Add areal density
-            input_dict["target"]["layerList"][layer]["elementList"][i]["arealDensity"] = var_params[index] * input_dict["target"]["layerList"][layer]["arealDensity"]
+            input_dict["target"]["layerList"][layer]["elementList"][i]["arealDensity"] = var_params[index] * \
+                                                                                         input_dict["target"][
+                                                                                             "layerList"][layer][
+                                                                                             "arealDensity"]
             difference -= var_params[index]
             index += 1
         # Add the difference to the last element, if < 0 is 0
@@ -159,9 +167,11 @@ def get_bounds(input_dict):
     # Experimental setup charge
     bounds.append((input_dict["experimentalSetup"]["minCharge"], input_dict["experimentalSetup"]["maxCharge"]))
     # Detector setup calibration factor
-    bounds.append((input_dict["detectorSetup"]["calibration"]["factor_min"], input_dict["detectorSetup"]["calibration"]["factor_max"]))
+    bounds.append((input_dict["detectorSetup"]["calibration"]["factor_min"],
+                   input_dict["detectorSetup"]["calibration"]["factor_max"]))
     # Detector setup calibration offset
-    bounds.append((input_dict["detectorSetup"]["calibration"]["offset_min"], input_dict["detectorSetup"]["calibration"]["offset_max"]))
+    bounds.append((input_dict["detectorSetup"]["calibration"]["offset_min"],
+                   input_dict["detectorSetup"]["calibration"]["offset_max"]))
     # Detector setup resolution
     bounds.append((input_dict["detectorSetup"]["minRes"], input_dict["detectorSetup"]["maxRes"]))
     # Target model
@@ -271,7 +281,6 @@ def create_single_opt_response_object(target, params, optimization_time, fitness
     }
     return opt_response
 
-
 # Test
 # opt = get_opt_from_file("../../files/input/opt_input.json")
 # # Simulate the spectra
@@ -280,5 +289,3 @@ def create_single_opt_response_object(target, params, optimization_time, fitness
 # # Get the variable parameters
 # var_params = get_variable_parameters(opt)
 # print(var_params)
-
-
