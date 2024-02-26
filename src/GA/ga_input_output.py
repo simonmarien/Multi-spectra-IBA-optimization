@@ -6,8 +6,6 @@ from src.GA import log
 import json
 import numpy as np
 
-OLD = False
-
 
 def convert_opt_input_to_ga_input(selected_spectra, experimental_setup, detector_setup, calculation_setup, de_parameter, target):
     """
@@ -65,13 +63,13 @@ def get_variable_parameters(input_dict):
     # For each layer in the target model
     for layer in input_dict["target"]["layerList"]:
         # If there are more than 1 element in the layer
-        if OLD or len(layer["elementList"]) > 1:
+        if len(layer["elementList"]) > 1:
             # Add arealDensity
             var_params.append(layer["arealDensity"])
             current_index += 1
             ratio_list = []
             # For each element in the layer
-            for element in layer["elementList"]:
+            for element in layer["elementList"][:-1]:
                 # Add ratio
                 var_params.append(element["ratio"])
                 current_index += 1
@@ -107,15 +105,25 @@ def set_variable_parameters(input_dict, var_params, ratio_indices):
     # Target model
     for ratio_indice in ratio_indices:
         # Add arealDensity
-        input_dict["target"]["layerList"][layer]["arealDensity"] = var_params[index]
+        areal_density = var_params[index]
+        input_dict["target"]["layerList"][layer]["arealDensity"] = areal_density
         index += 1
+        difference = 1
         # For each element in the layer
         for i in range(len(ratio_indice)):
             # Add ratio
             input_dict["target"]["layerList"][layer]["elementList"][i]["ratio"] = var_params[index]
             # Add areal density
             input_dict["target"]["layerList"][layer]["elementList"][i]["arealDensity"] = var_params[index] * input_dict["target"]["layerList"][layer]["arealDensity"]
+            difference -= var_params[index]
             index += 1
+        # Add the difference to the last element, if < 0 is 0
+        if difference < 0:
+            input_dict["target"]["layerList"][layer]["elementList"][-1]["ratio"] = 0
+            input_dict["target"]["layerList"][layer]["elementList"][-1]["arealDensity"] = 0
+        else:
+            input_dict["target"]["layerList"][layer]["elementList"][-1]["ratio"] = difference
+            input_dict["target"]["layerList"][layer]["elementList"][-1]["arealDensity"] = difference * areal_density
         layer += 1
     return input_dict
 
@@ -160,11 +168,11 @@ def get_bounds(input_dict):
     # For each layer in the target model
     for layer in input_dict["target"]["layerList"]:
         # If there are more than 1 element in the layer
-        if OLD or len(layer["elementList"]) > 1:
+        if len(layer["elementList"]) > 1:
             # Add arealDensity
             bounds.append((layer["min_AD"], layer["max_AD"]))
             # For each element in the layer
-            for element in layer["elementList"]:
+            for element in layer["elementList"][:-1]:
                 # Add ratio
                 bounds.append((element["min_ratio"], element["max_ratio"]))
 

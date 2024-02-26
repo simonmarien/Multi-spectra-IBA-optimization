@@ -88,13 +88,13 @@ class OptimizationObjectMS:
         index = 0
         # For each layer in the target model
         for layer in self.optimization_dict['target']['layerList']:
-            if OLD or len(layer['elementList']) > 1:
+            if len(layer['elementList']) > 1:
                 # Add arealDensity
                 bounds.append((layer['min_AD'], layer['max_AD']))
                 index += 1
                 ratio_indices = []
                 # For each element in the layer
-                for element in layer['elementList']:
+                for element in layer['elementList'][:-1]:
                     # Add ratio
                     bounds.append((element['min_ratio'], element['max_ratio']))
                     ratio_indices.append(index)
@@ -153,13 +153,21 @@ class OptimizationObjectMS:
             # Add arealDensity
             target['layerList'][layer]['arealDensity'] = self.params[index]
             index += 1
+            difference = 1
             # For each element in the layer
             for i in range(len(ratio)):
                 # Add ratio
                 target['layerList'][layer]['elementList'][i]['ratio'] = self.params[index]
                 # Add areal density
                 target['layerList'][layer]['elementList'][i]['arealDensity'] = self.params[index] * target['layerList'][layer]['arealDensity']
+                difference -= self.params[index]
                 index += 1
+            if difference < 0:
+                target['layerList'][layer]['elementList'][-1]['ratio'] = 0
+                target['layerList'][layer]['elementList'][-1]['arealDensity'] = 0
+            else:
+                target['layerList'][layer]['elementList'][-1]['ratio'] = difference
+                target['layerList'][layer]['elementList'][-1]['arealDensity'] = difference * target['layerList'][layer]['arealDensity']
             layer += 1
 
         # self.optimization_dict['measurements'][i] = measurement
