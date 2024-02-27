@@ -1,7 +1,11 @@
 from scipy.optimize import differential_evolution
 from scipy.signal import savgol_filter
-import ga_input_output, experiment_input
-import math, datetime, json, numpy as np
+import math, datetime, json, os, sys, numpy as np
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+import src.GA.ga_input_output as ga_input_output
+import src.GA.experiment_input as experiment_input
+
 
 
 global_logger = None
