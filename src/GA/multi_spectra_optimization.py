@@ -264,18 +264,6 @@ class OptimizationObjectMS:
         end_channel = self.optimization_dict['measurements'][i]['deEndCh']
         return start_channel, end_channel
 
-    def normalize_ratios(self):
-        """
-        Normalizes the ratios
-        :return:
-        """
-        for ratio in self.ratio_indices:
-            temp = 0
-            for i in ratio:
-                temp += self.params[i]
-            for i in ratio:
-                self.params[i] = self.params[i] / temp
-
     def get_sim_input(self, measurement, target):
         """
         Gets the simulation input for the i-th measurement
@@ -304,7 +292,6 @@ def objective_function(params):
         stop = True
     global optimization_object
     optimization_object.params = params
-    # optimization_object.normalize_ratios()
     fitness = optimization_object.evaluate()
     print(f"Fitness: {1-fitness}")
     return 1 - fitness
@@ -324,80 +311,6 @@ def callback_function(xk, convergence):
         print("Stop minimizing")
         iteration = 0
         return True
-
-
-def run(filename):
-    """
-    Runs the optimization
-    :param filename:
-    :return:
-    """
-    input_data = experiment_input.get_experiment_ms_data_from_file(filename)
-    global optimization_object
-    optimization_object = OptimizationObjectMS([], input_data)
-    # Get the de parameters
-    de_parameters = ga_input_output.get_de_parameter_dict_from_opt(input_data)
-    pop_size, max_iter, mutation_factor, crossover_rate, threshold = ga_input_output.get_de_parameters_from_opt(de_parameters)
-    # Get the bounds
-    bounds = optimization_object.bounds
-    # Run the optimization
-    result = differential_evolution(objective_function, bounds, popsize=pop_size, maxiter=max_iter, mutation=mutation_factor, recombination=crossover_rate, disp=True, polish=True, callback=callback_function, tol=0)
-    print(result.x)
-
-
-def run_experiment(filename, logger):
-    """
-    Runs the experiment
-    :param filename:
-    :param logger:
-    :param run_number:
-    :return:
-    """
-    # Get the input data
-    input_data = experiment_input.get_experiment_ms_data_from_file(filename)
-    global optimization_object
-    optimization_object = OptimizationObjectMS([], input_data)
-    global global_logger
-    global_logger = logger
-    # Get the de parameters
-    de_parameters = ga_input_output.get_de_parameter_dict_from_opt(input_data)
-    pop_size, max_iter, mutation_factor, crossover_rate, threshold = ga_input_output.get_de_parameters_from_opt(de_parameters)
-    # Get the bounds
-    bounds = optimization_object.bounds
-    # Run the optimization
-    # result = differential_evolution(objective_function, bounds, popsize=pop_size, maxiter=max_iter, mutation=mutation_factor, recombination=crossover_rate, disp=True, polish=True, callback=callback_function, tol=0)
-    result = differential_evolution(objective_function, bounds, popsize=pop_size, maxiter=max_iter, mutation=mutation_factor, recombination=crossover_rate, disp=True, polish=True, callback=callback_function, tol=0.01)
-
-    xk = result.x
-    # Normalize ratios
-    ratio_indices = optimization_object.ratio_indices
-    for ratio in ratio_indices:
-        temp = 0
-        for i in ratio:
-            temp += xk[i]
-        for i in ratio:
-            xk[i] = xk[i] / temp
-
-    global iteration
-    logger.log_message(f"End iteration: {iteration}")
-    iteration = 0
-
-    logger.log_message(f"Final solution: {xk}")
-
-
-def evaluate_parameter_values(values, filename):
-    """
-    Evaluates the parameter values
-    :param values:
-    :param filename:
-    :return:
-    """
-    input_data = experiment_input.get_experiment_ms_data_from_file(filename)
-    global optimization_object
-    optimization_object = OptimizationObjectMS(values, input_data)
-    fitness = optimization_object.evaluate()
-    print(fitness)
-    return fitness
 
 
 def optimize_multi_spectra(ms_opt_input):

@@ -17,7 +17,11 @@ def test_optimize_single_spectrum(mock_simulate_spectra):
             opt_input = file.read()
 
     # Simulate the return value of the simulate_spectra function
-    mock_simulate_spectra.return_value = json.loads(opt_input)["experimentalSpectrum"]["data"]
+    simulated_spectra = json.loads(opt_input)["experimentalSpectrum"]["data"]
+    # Add 5 to every value in the simulated spectrum
+    for i in range(len(simulated_spectra)):
+        simulated_spectra[i] += 5
+    mock_simulate_spectra.return_value = simulated_spectra
 
     # Call the function under test
     result = sso.optimize_single_spectrum(opt_input)
@@ -25,7 +29,7 @@ def test_optimize_single_spectrum(mock_simulate_spectra):
     # Make assertions about the result
     assert result["optimizationTime"] > 0
     assert result[
-               "fitness"] == 1  # Fitness is always 1 because the simulated spectrum is the same as the experimental spectrum
+               "fitness"] > 0
     assert result["charge"] > json.loads(opt_input)["experimentalSetup"]["minCharge"]
     assert result["charge"] < json.loads(opt_input)["experimentalSetup"]["maxCharge"]
     assert result["resolution"] > json.loads(opt_input)["detectorSetup"]["minRes"]
