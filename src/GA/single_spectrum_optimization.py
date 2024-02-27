@@ -79,27 +79,17 @@ class OptimizationObject:
             sim_spectr = int(simulated_spectra[i])
             sigma_2 += (ref_spectr - sim_spectr) ** 2
 
-        # print("Sigma_2: ", sigma_2)
-
         lff = self.calculate_lff()
 
         global iteration
         iteration += 1
         print("Iteration: ", iteration)
-        # if iteration > 12000:
-        #     sigma_2 = 1e-10
-        #     global stop
-        #     stop = True
 
         if sigma_2 == 0:
             iteration = 0
             return 1
 
         sigma_2 = math.log(lff) / math.log(sigma_2)
-        # print("Variable parameters: ", self.params)
-        # print("Fitness: ", sigma_2)
-        # print(datetime.datetime.now())
-        # print("Fitness: ", sigma_2)
 
         global fitness
         fitness.append(sigma_2)
@@ -124,54 +114,13 @@ class OptimizationObject:
 
         return result
 
-    def normalize_ratios(self):
-        """
-        Normalizes the ratios
-        :return:
-        """
-        # For each ratio_indice, the sum of the ratios must be 1
-        # Add the ratio indicies and add it to constraints tuple
-        for ratio_indice in self.ratio_indices:
-            temp = 0
-            for i in ratio_indice:
-                temp += self.params[i]
-            for i in ratio_indice:
-                self.params[i] /= temp
-
-    def round_params(self):
-        """
-        Rounds the parameters
-        :return:
-        """
-        for i in range(len(self.params)):
-            self.params[i] = round(self.params[i], 6)
-
 
 def objective_function(params):
     # Check for nan values
     if np.isnan(params).any():
         return 1
     optimization_object.params = params
-    # optimization_object.normalize_ratios()
-    # optimization_object.round_params()
     return 1 - optimization_object.evaluate()
-
-
-def normalize_ratios_global(params):
-    """
-    Normalizes the ratios
-    :return:
-    """
-    # For each ratio_indice, the sum of the ratios must be 1
-    # Add the ratio indicies and add it to constraints tuple
-    global ratio_indices_global
-    for ratio_indice in ratio_indices_global:
-        temp = 0
-        for i in ratio_indice:
-            temp += params[i]
-        for i in ratio_indice:
-            params[i] /= temp
-    return params
 
 
 def callback_function(xk, convergence):
@@ -179,7 +128,6 @@ def callback_function(xk, convergence):
     # global optimization_object
     # print("Generation completed. Best fitness so far:", optimization_object.last_fitness)
     # return False
-    xk = normalize_ratios_global(xk)
     print(f"Current best solution: {xk}, Convergence: {convergence}")
     print(datetime.datetime.now())
     global global_logger
@@ -215,132 +163,6 @@ def optimize_spectra(reference_spectra, fixed_params, bounds, de_parameters, rat
     objective_value = result.fun
 
     return result.x, objective_value
-
-
-def run(file_path):
-    """
-    Runs the optimization
-    :param file_path:
-    :return:
-    """
-    # If the file path is None, use the default file path
-    opt_input = None
-    if file_path is None:
-        opt_input = ga_input_output.get_opt_from_file("../../files/input/opt_input.json")
-    else:
-        opt_input = experiment_input.get_experiment_data_from_file(file_path)
-        print("Optimization input: ", opt_input)
-    # Get experiment test data
-    # opt_input = experiment_input.get_experiment_data_from_file("../../files/experiment_data/SrTiOx copy.json")
-    # Get the variable parameters
-    var_params, ratio_indices = ga_input_output.get_variable_parameters(opt_input)
-    # Get the fixed parameters
-    fixed_params = opt_input
-    # Get the reference spectra
-    reference_spectra = ga_input_output.get_reference_spectra(opt_input)
-    # Get the bounds (+100% and -100%) of the variable parameters
-    bounds = ga_input_output.get_bounds(opt_input)
-    print("Bounds: ", bounds)
-    # Get de parameters
-    de_parameters = ga_input_output.get_de_parameter_dict_from_opt(opt_input)
-    # Optimize the spectra
-    print(datetime.datetime.now())
-    optimized_params = optimize_spectra(reference_spectra, fixed_params, bounds, de_parameters, ratio_indices)
-    print(datetime.datetime.now())
-    # Print the result
-    print(optimized_params)
-    print(fitness)
-
-
-def evaluate_parameter_values(values, filename):
-    """
-    Evaluates the parameter values
-    :param values:
-    :param filename:
-    :return:
-    """
-    # Get the optimization input
-    opt_input = experiment_input.get_experiment_data_from_file(filename)
-    # Get the variable parameters
-    var_params, ratio_indices = ga_input_output.get_variable_parameters(opt_input)
-    # Get the fixed parameters
-    fixed_params = opt_input
-    # Get the reference spectra
-    reference_spectra = ga_input_output.get_reference_spectra(opt_input)
-    # Get the bounds (+100% and -100%) of the variable parameters
-    bounds = ga_input_output.get_bounds(opt_input)
-    # Create the optimization object
-    optimization_object_test = OptimizationObject(values, fixed_params, reference_spectra, ratio_indices)
-    # Evaluate the objective function
-    f = optimization_object_test.evaluate()
-    # Print the result
-    print(f)
-    return f
-
-
-def get_simulated_spectra(values, filename):
-    """
-    Gets the simulated spectra
-    :param values:
-    :param filename:
-    :return:
-    """
-    # Get the optimization input
-    opt_input = experiment_input.get_experiment_data_from_file(filename)
-    # Get the variable parameters
-    var_params, ratio_indices = ga_input_output.get_variable_parameters(opt_input)
-    # Get the fixed parameters
-    fixed_params = opt_input
-    # Get the reference spectra
-    reference_spectra = ga_input_output.get_reference_spectra(opt_input)
-    # Create the optimization object
-    optimization_object_test = OptimizationObject(values, fixed_params, reference_spectra, ratio_indices)
-    # Simulate the spectra
-    simulated_spectra = optimization_object_test.simulate_spectra_return_all()
-    return simulated_spectra
-
-
-def run_experiment(filename, logger, strategy):
-    """
-    Runs the experiment
-    :param filename:
-    :param logger:
-    :param strategy:
-    :return:
-    """
-    global global_logger
-    global_logger = logger
-    # Get the optimization input
-    opt_input = experiment_input.get_experiment_data_from_file(filename)
-    # Get the variable parameters
-    var_params, ratio_indices = ga_input_output.get_variable_parameters(opt_input)
-    # Get the fixed parameters
-    fixed_params = opt_input
-    # Get the reference spectra
-    reference_spectra = ga_input_output.get_reference_spectra(opt_input)
-    # Get the bounds (+100% and -100%) of the variable parameters
-    bounds = ga_input_output.get_bounds(opt_input)
-    # Get de parameters
-    de_parameters = ga_input_output.get_de_parameter_dict_from_opt(opt_input)
-    # Optimize the spectra
-    optimized_params = optimize_spectra(reference_spectra, fixed_params, bounds, de_parameters, ratio_indices, strategy)
-
-    # Normalize the ratios
-    for ratio_indice in ratio_indices:
-        temp = 0
-        for i in ratio_indice:
-            temp += optimized_params[i]
-        for i in ratio_indice:
-            optimized_params[i] /= temp
-
-    # Log end iteration
-    global iteration
-    logger.log_message(f"End iteration: {iteration}")
-    iteration = 0
-    logger.log_message(f"Final solution: {optimized_params}")
-    global fitness
-    logger.log_message(f"Fitness: {fitness}")
-    fitness = []
 
 
 def optimize_single_spectrum(opt_input):
