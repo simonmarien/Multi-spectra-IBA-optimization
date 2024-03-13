@@ -1,12 +1,12 @@
 import socket, time, json, os, sys
 import threading
-import single_spectrum_optimization as sso
-import multi_spectra_optimization as mso
 
 
 # Add the project root directory to the PYTHONPATH
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 import src.logic.config as config
+import src.GA.single_spectrum_optimization as sso
+import src.GA.multi_spectra_optimization as mso
 
 
 def handle_client_connection(client_socket):
