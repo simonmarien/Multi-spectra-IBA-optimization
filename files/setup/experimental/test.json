@@ -1,0 +1,15 @@
+{
+    "E0": 1520.0,
+    "deltaE0": 0.0,
+    "alpha": -11.0,
+    "theta": 170.0,
+    "beta": 21.0,
+    "charge": 25.0,
+    "minCharge": 15.0,
+    "maxCharge": 30.0,
+    "projectile": {
+        "Z": 2,
+        "M": 4.002603,
+        "E": 1520.0
+    }
+}

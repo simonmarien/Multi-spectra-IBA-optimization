@@ -15,6 +15,23 @@ def simulate_spectra():
     run_client_sim(config.SIM_INPUT_FILE, config.SIM_OUTPUT_FOLDER + "generated-" + now_str + ".json")
 
 
+def optimize_spectra_de(now_str):
+    # now = datetime.datetime.now()
+    # now_str = now.strftime("%Y-%m-%d_%H-%M-%S")
+    # run_client_sim('../../files/input/sim_input.json', "../../files/spectra/json/generated-" + now_str + ".json", port=config.DE_DOCKER_PORT)
+    # run_client_no_progress("OPTIMIZE", "../../files/input/opt_input.json",
+    #                        "../../files/spectra/json/generated-opt-" + ".json", port=config.DE_DOCKER_PORT)
+    run_client_no_progress("OPTIMIZE", config.OPT_INPUT_FILE,
+                           config.OPT_OUTPUT_FOLDER + now_str + "/generated-opt-" + now_str + ".json",
+                           port=config.DE_DOCKER_PORT)
+
+
+def optimize_multiple_spectra_de(now_str):
+    run_client_no_progress("OPTIMIZE_MS", config.OPT_MS_INPUT_FILE,
+                           config.OPT_MS_OUTPUT_FOLDER + now_str + "/generated-opt-" + now_str + ".json",
+                           port=config.DE_DOCKER_PORT)
+
+
 def simulate_optimized_spectra(now_str, file_prefix=""):
     run_client_sim(config.SIM_INPUT_FILE,
                    config.OPT_OUTPUT_FOLDER + now_str + "/" + file_prefix + "generated-sim-" + now_str + ".json")
@@ -238,3 +255,62 @@ def simulate_spectra_from_dict(input_dict, port=config.JAVA_DOCKER_PORT, debug=F
     except Exception as ex:
         print("Error:", ex)
         print("Request string:", request_str)
+
+
+def run_client_no_progress(request_type, input_file, output_file, port=config.DE_DOCKER_PORT):
+    server = config.DE_DOCKER_NAME
+    if not config.DOCKERIZED:
+        server = "localhost"
+
+    try:
+        with open(input_file, 'r') as file:
+            input_str = file.read()
+            print("Loading Input File ..... Done")
+    except Exception as ex:
+        print("Error loading input file:", ex)
+        return
+
+    try:
+        print("Connecting to server ... ", end="")
+        print(server, int(port))
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((server, int(port)))
+            print("Done")
+
+            request_str = ""
+            if request_type == "OPTIMIZE":
+                request_str = "op_"
+            elif request_type == "OPTIMIZE_MS":
+                request_str = "ms_"
+            request_str += input_str
+
+            print("Sending input .......... ", end="")
+
+            request_str += " \nEnd_Of_Transmission\n"
+
+            s.sendall(request_str.encode())
+            print("Done")
+
+            reply = None
+
+            # Receive reply from server
+            print("Waiting for reply ..... ", end="")
+            reply = ""
+            while True:
+                chunk = s.recv(4096).decode()
+                if "End_Of_Transmission" in chunk:
+                    reply += chunk[:chunk.find("End_Of_Transmission")]
+                    break
+                reply += chunk
+            print("Done")
+
+            print("Writing output file .... ", end="")
+            with open(output_file, 'w') as file:
+                file.write(reply)
+                print("Done")
+
+    except Exception as ex:
+        print("Error:", ex)
+
+
+# optimize_spectra_de("2020-10-30_15-00-00")

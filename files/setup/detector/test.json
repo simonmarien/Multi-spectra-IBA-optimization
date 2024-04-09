@@ -1,0 +1,14 @@
+{
+    "calibration": {
+        "factor": 1.5,
+        "factor_min": 1.4,
+        "factor_max": 1.6,
+        "offset": 25.0,
+        "offset_min": 20.0,
+        "offset_max": 30.0
+    },
+    "resolution": 15.0,
+    "minRes": 14.0,
+    "maxRes": 17.0,
+    "solidAngle": 1.0
+}
