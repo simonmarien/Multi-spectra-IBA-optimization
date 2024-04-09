@@ -1,0 +1,15 @@
+{
+    "stoppingData": "StoppingData.json",
+    "crossSectionData":[],
+    "numberOfChannels": 1024,
+    "stoppingPowerCalculationMode": "ZB",
+    "compoundCalculationMode": "BRAGG",
+    "screeningMode": "ANDERSON",
+    "stragglingMode": "CHU",
+    "chargeFractionMode": "LINEAR",
+    "useLookUpTable": true,
+    "simulateIsotopes": false,
+    "showIsotopes": false,
+    "showLayers": false,
+    "showElements": true
+}

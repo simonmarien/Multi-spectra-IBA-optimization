@@ -1,0 +1,115 @@
+{
+    "layerList": [
+        {
+            "elementList": [
+                {
+                    "isotopeList": [
+                        {
+                            "mass": 196.9666,
+                            "abundance": 1.0
+                        }
+                    ],
+                    "atomicNumber": 79,
+                    "arealDensity": 12.0,
+                    "ratio": 1.0,
+                    "min_ratio": 0.0,
+                    "max_ratio": 1.0
+                }
+            ],
+            "arealDensity": 12.0,
+            "massDensity": 19.311,
+            "thickness": 2.031782233959919,
+            "min_AD": 1.0E-5,
+            "max_AD": 520.0
+        },
+        {
+            "elementList": [
+                {
+                    "isotopeList": [
+                        {
+                            "mass": 15.99492,
+                            "abundance": 0.99762
+                        },
+                        {
+                            "mass": 16.99913,
+                            "abundance": 3.8E-4
+                        },
+                        {
+                            "mass": 17.99916,
+                            "abundance": 0.002
+                        }
+                    ],
+                    "atomicNumber": 8,
+                    "arealDensity": 448.2003055042376,
+                    "ratio": 0.6748040829557765,
+                    "min_ratio": 0.0,
+                    "max_ratio": 1.0
+                },
+                {
+                    "isotopeList": [
+                        {
+                            "mass": 27.97693,
+                            "abundance": 0.9223
+                        },
+                        {
+                            "mass": 28.9765,
+                            "abundance": 0.0467
+                        },
+                        {
+                            "mass": 29.97377,
+                            "abundance": 0.031
+                        },
+                        {
+                            "mass": 31.97415,
+                            "abundance": 0.0
+                        }
+                    ],
+                    "atomicNumber": 14,
+                    "arealDensity": 215.99292750204597,
+                    "ratio": 0.32519591704422346,
+                    "min_ratio": 0.0,
+                    "max_ratio": 1.0
+                }
+            ],
+            "arealDensity": 664.1932330062835,
+            "massDensity": 1.7171153849379888,
+            "thickness": 127.96867602524259,
+            "min_AD": 100.0,
+            "max_AD": 1200.0
+        },
+        {
+            "elementList": [
+                {
+                    "isotopeList": [
+                        {
+                            "mass": 27.97693,
+                            "abundance": 0.9223
+                        },
+                        {
+                            "mass": 28.9765,
+                            "abundance": 0.0467
+                        },
+                        {
+                            "mass": 29.97377,
+                            "abundance": 0.031
+                        },
+                        {
+                            "mass": 31.97415,
+                            "abundance": 0.0
+                        }
+                    ],
+                    "atomicNumber": 14,
+                    "arealDensity": 5300.0,
+                    "ratio": 1.0,
+                    "min_ratio": 0.0,
+                    "max_ratio": 1.0
+                }
+            ],
+            "arealDensity": 5300.0,
+            "massDensity": 2.3212,
+            "thickness": 1064.5197924146216,
+            "min_AD": 5299.999999999999,
+            "max_AD": 5300.0
+        }
+    ]
+}

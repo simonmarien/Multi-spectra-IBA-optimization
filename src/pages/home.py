@@ -138,8 +138,9 @@ def show():
         opt_button = st.button("Start Optimization")
 
         if opt_button:
-            # input.save_opt_input_json(selected_spectra_opt, selected_experimental_setup_opt, selected_detector_setup_opt, selected_calculation_setup_opt, convert.get_de_parameter_from_state(), file.get_target_json_from_file(selected_target))
+            input.save_opt_input_json(selected_spectra_opt, selected_experimental_setup_opt, selected_detector_setup_opt, selected_calculation_setup_opt, convert.get_de_parameter_from_state(), file.get_target_json_from_file(selected_target))
             now_str = file.optimize_single_spectra(selected_spectra_opt)
+            print("Generate sample on: ", now_str)
             # cmd.optimize_spectrum(now_str)
 
             # Create a placeholder for the progress bar
@@ -149,8 +150,10 @@ def show():
             progress_bar = progress_bar_placeholder.progress(0)
 
             end_generation = int(file.get_de_setup_json_from_file(selected_de_parameter_opt)['endGeneration'])
+            print("End generation: ", end_generation)
             # If Ruthelde is selected
             if de_radio == "Ruthelde":
+                print("Ruthelde selected")
                 for progress in client.optimize_spectra(now_str):
                     if progress > int(end_generation - 2):
                         # Remove progress bar and status text
@@ -222,7 +225,7 @@ def show():
         ms_opt_button =  st.button("Start optimization with multiple spectra", disabled=len(spectra_setup_list) <= 1)
 
         if ms_opt_button:
-            # input.save_ms_opt_input_json(spectra_setup_list, selected_calculation_setup_ms, file.get_de_setup_json_from_file(selected_de_parameter_ms_opt), file.get_target_json_from_file(selected_target_ms_opt))
+            input.save_ms_opt_input_json(spectra_setup_list, selected_calculation_setup_ms, file.get_de_setup_json_from_file(selected_de_parameter_ms_opt), file.get_target_json_from_file(selected_target_ms_opt))
             now_str = file.optimize_multiple_spectra(selected_spectra_ms)
 
             # Create a placeholder for the progress bar
